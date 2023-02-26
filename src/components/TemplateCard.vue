@@ -2,7 +2,7 @@
 <template>
     <div class="card">
       <div class="img-area">
-
+        <img class="avatar" :src="info.avatar" alt="">
       </div>
       <div class="info-area">
         <div class="name">{{info.name}}</div>
@@ -45,7 +45,7 @@ export default {
   background-color: rgb(53, 57, 65);
   border-radius: 5px;
   height: 80px;
-  width: 380px;
+  // width: 380px;
   padding: 24px 0;
   cursor: pointer;
 }
@@ -60,6 +60,12 @@ export default {
   width: 80px;
   height: 100%;
   float: left;
+
+  .avatar {
+    width: 44px;
+    height: 44px;
+    margin: 18px;
+  }
 }
 
 .info-area {
@@ -91,10 +97,13 @@ export default {
     }
 
     li {
-      margin-right: 10px;
       background-color: rgb(112, 116, 122);
-      padding: 2px 16px;
+      padding: 2px 12px;
       border-radius: 3px;
+      display: inline-block;
+      margin-right: 5px;
+      margin-left: 5px;
+      text-align: center;
     }
   }
 }

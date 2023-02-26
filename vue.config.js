@@ -13,7 +13,7 @@ module.exports = {
         port: 8080,
         proxy: {          //设置代理解决跨域问题
             "/": {
-                target: "http://localhost:8088",    //要跨域的域名
+                target: "http://192.168.44.100:30088",    //要跨域的域名
                 changeOrigin: true                  //是否开启跨域
             }
         }

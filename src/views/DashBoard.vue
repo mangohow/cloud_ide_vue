@@ -2,18 +2,39 @@
 <template>
     <el-container class="root">
       <el-header class="header">
-
+        <h3 class="site-name">Cloud Code</h3>
+        <div class="user-area clearfix">
+          <img class="user-avatar" :src="user.avatar" alt="">
+          <h4 class="user-nickname">{{user.nickname}}</h4>
+        </div>
       </el-header>
 
+      <!-- "#1e1e22" -->
       <el-container class="bottom-main">
         <el-aside>
-          <SpaceTemplateCard :kinds="tmplKinds" @triggered="changeTmpls"></SpaceTemplateCard>
+          <!-- <SpaceTemplateCard :kinds="tmplKinds" @triggered="changeTmpls"></SpaceTemplateCard> -->
+          <el-menu
+            default-active="0"
+            class="el-menu-vertical-demo"
+            @select="OnMenuSelected"
+            background-color="#303336"  
+            text-color="#fff"
+            active-text-color="#ffd04b">
+            <el-menu-item index="0">
+              <i class="el-icon-menu"></i>
+              <span slot="title">空间模板</span>
+            </el-menu-item>
+            <el-menu-item index="1">
+              <i class="el-icon-document"></i>
+              <span slot="title">工作空间</span>
+            </el-menu-item>
+          </el-menu>
         </el-aside>
 
         <el-main>
-          <div class="right-side">
-            <TemplateView :tmpls="tmpls"></TemplateView>
-          </div>
+          <keep-alive>
+            <router-view></router-view>
+          </keep-alive>
         </el-main>
       </el-container>
     </el-container>
@@ -22,45 +43,32 @@
 
 <script>
 
-import SpaceTemplateCard from '../components/SpaceTemplateCard.vue'
 import TemplateView from '../components/TemplateView.vue'
+import {Base64} from "js-base64"
 
 export default {
   name: 'DashBoard',
   components: {
-    SpaceTemplateCard,
-    TemplateView
+    TemplateView,
   },
   data() {
     return {
-      tmplKinds: [
-        {id: 0, name: "全部模板"},
-        {id: 1, name: "常用模板"},
-        {id: 2, name: "程序模板"}
-      ],
-      tmpls: [
-        {
-          id: 1,
-          name: "常用模板",
-          items: [
-            {id: 1, avatar: "", name: "Go", desc: "Go语言环境, 包含go sdk、make、git工具", tags:["Go", "Git"]},
-            {id: 2, avatar: "", name: "C++", desc: "C++语言环境, 包含gcc、g++、make、git工具", tags:["Cpp", "Git"]},
-            {id: 3, avatar: "", name: "C++", desc: "C++语言环境, 包含gcc、g++、make、git工具", tags:["Cpp", "Git"]},
-            {id: 4, avatar: "", name: "C++", desc: "C++语言环境, 包含gcc、g++、make、git工具", tags:["Cpp", "Git"]}
-          ]
-        },
-        {
-          id: 2,
-          name: "程序模板",
-          items: []
-        }
+      user: {},
+      routes: [
+        {path: "/templates"},
+        {path: "/workspaces"}
       ]
     }
   },
   methods: {
-    changeTmpls(id) {
-      console.log(id)
+    OnMenuSelected(index) {
+      this.$router.push(this.routes[index].path)
     }
+  },
+  mounted() {
+    const data = window.sessionStorage.getItem("userData")
+    const jdata = Base64.decode(data)
+    this.user = JSON.parse(jdata)
   }
 }
 </script>
@@ -72,11 +80,45 @@ export default {
 }
 
 .el-header {
-  background-color: #B3C0D1;
+  background-color: #373b42;
   color: #333;
   line-height: 60px;
-}
+  padding: 0 80px;
 
+  .site-name {
+    color: rgb(75, 196, 165);
+    text-align: left;
+    margin: 3px;
+    font-size: 24px;
+    font-weight: 550;
+    font-family: Georgia;
+    float: left;
+  }
+
+  .user-area {
+    float: right;
+    cursor: pointer;
+    height: 34px;
+    margin: 13px 0;
+  }
+
+  .user-avatar {
+    float: left;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+  }
+
+  .user-nickname {
+    float: left;
+    color: #fff;
+    margin: 0 0 0 8px;
+    font-weight: normal;
+    line-height: 2em;
+    font-size: 17px;
+  }
+}
 
 
 .bottom-main {
@@ -85,24 +127,22 @@ export default {
 }
 
 .el-aside {
-  background-color: #D3DCE6;
+  background-color: #303336;
   height: 100%;
-  width: 260px !important;
+  width: 150px !important;
   float: left;
+
+  .el-menu {
+    border: 0 !important;
+  }
 }
 
 .el-main {
-  background-color: #E9EEF3;
   height: 100%;
   width: calc(100% - 260px);
   float: left;
-
-  .right-side {
-    background-color: rgb(33, 35, 41);
-    margin: 20px 0 0 30px;
-    height: calc(100% - 20px);
-    border-top-left-radius: 8px;
-  }
+  padding: 0;
+  background-color: rgb(33, 35, 41);
 }
 
 
