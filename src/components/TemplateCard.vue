@@ -8,9 +8,7 @@
         <div class="name">{{info.name}}</div>
         <div class="desc">{{info.desc}}</div>
         <div class="tags">
-          <ul>
-            <li v-for="(tag, i) in info.tags" :key="i">{{tag}}</li>
-          </ul>
+          <span v-for="(tag, i) in info.tags" :key="i">{{tag}}</span>
         </div>
       </div>
     </div>
@@ -45,7 +43,6 @@ export default {
   background-color: rgb(53, 57, 65);
   border-radius: 5px;
   height: 80px;
-  // width: 380px;
   padding: 24px 0;
   cursor: pointer;
 }
@@ -89,18 +86,13 @@ export default {
   .tags {
     color: white;
     font-size: 12px;
+    display: block;
+    padding: 15px 0 10px 0;
 
-    ul {
-      list-style: none;
-      display: flex;
-      padding: 10px 0;
-    }
-
-    li {
+    span {
       background-color: rgb(112, 116, 122);
-      padding: 2px 12px;
+      padding: 2px 8px;
       border-radius: 3px;
-      display: inline-block;
       margin-right: 5px;
       margin-left: 5px;
       text-align: center;

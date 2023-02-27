@@ -77,14 +77,16 @@ export default {
           this.spaceForm.space_spec_id = ""
       },
       async getTemplates() {
-        const {data: res} = await this.$axios.get("/api/tmpls")
+        const {data: res} = await this.$axios.get("/api/template/list")
         const QuerySuccess = 0
         if (res.status != QuerySuccess) {
           this.$message.error(res.message)
           return
         }
         const kinds = res.data.kinds
-        const tmpls = res.data.tmpls
+        const tmpls = res.data.tmpls.sort((a, b) => {
+          return a.id - b.id
+        })
 
         kinds.forEach((ele, index) => {
           this.spaceTemplates[index].id = ele.id
@@ -129,7 +131,7 @@ export default {
         return true
       },
       async getSpaceSpecs() {
-        const {data:res} = await this.$axios.get("/api/specs")
+        const {data:res} = await this.$axios.get("/api/spec/list")
         const QuerySuccess = 0
         if (res.status != QuerySuccess) {
           this.$message.error(res.message)
@@ -143,7 +145,6 @@ export default {
         if (!this.validateCreateInfo()) {
           return          
         }
-        console.log(this.spaceForm)
 
         const loading = this.$loading({
             lock: true,
@@ -152,7 +153,7 @@ export default {
             background: 'rgba(0, 0, 0, 0.7)'
         });
 
-        const {data:res} = await this.$axios.post("/api/space_cas", this.spaceForm)
+        const {data:res} = await this.$axios.post("/api/workspace/cas", this.spaceForm)
         const SpaceStartSuccess = 9
         if (res.status != SpaceStartSuccess) {
           this.$message.error(res.message)
@@ -164,7 +165,7 @@ export default {
           loading.close()
           const spaceUrl = "http://192.168.44.100/ws/" + res.data.sid + "/"
           window.open(spaceUrl, '_blank')
-        }, 1000);
+        }, 2000);
         
       },
       async createSpace() {
@@ -173,9 +174,8 @@ export default {
         if (!this.validateCreateInfo()) {
           return          
         }
-        console.log(this.spaceForm)
 
-        const {data:res} = await this.$axios.post("/api/space", this.spaceForm)
+        const {data:res} = await this.$axios.post("/api/workspace", this.spaceForm)
         const SpaceCreateSuccess = 5
         if (res.status != SpaceCreateSuccess) {
           this.$message.error(res.message)

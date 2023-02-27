@@ -77,7 +77,7 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)'
             });
 
-            const {data:res} = await this.$axios.put("/api/space_start", {id: this.space.id})
+            const {data:res} = await this.$axios.put("/api/workspace/start", {id: this.space.id})
             const SpaceStartSuccess = 9
             if (res.status != SpaceStartSuccess) {
                 this.$message.error(res.message)
@@ -85,7 +85,7 @@ export default {
                 return
             }
 
-            // 1s钟后在打开
+            // 2s钟后在打开
             setTimeout(() => {
                 loading.close()
                 this.$message.success(res.message)
@@ -93,14 +93,14 @@ export default {
                 window.open(url, "_blank")
                 // 通知父组件改变space的running_status字段
                 this.$emit("onStartSpace", this.index, true)
-            }, 1000);           
+            }, 2000);           
         },
         async stopWorkspace() {
             if (!this.space.running_status) {
                 return
             }
 
-            const {data:res} = await this.$axios.put("/api/space_stop", {"sid": this.space.sid})
+            const {data:res} = await this.$axios.put("/api/workspace/stop", {"sid": this.space.sid})
             const SpaceStopSuccess = 14
             if (res.status != SpaceStopSuccess) {
                 this.$message.error(res.message)
@@ -121,12 +121,12 @@ export default {
                 cancelButtonText: '取消',
                 customClass: "delete-confirm"
             }).then(async () => {
-                //删除博客
+                
                 if (this.space.running_status) {
                     this.$message.warning("工作空间正在运行,请先停止!")
                     return
                 }
-                const url = "/api/space?id=" + this.space.id
+                const url = "/api/workspace?id=" + this.space.id
                 
                 const {data:res} = await this.$axios.delete(url)
                 const SpaceDeleteSuccess = 11
@@ -151,8 +151,6 @@ export default {
                         this.$message.error("名称不能为空")
                         return
                     }
-                    
-                    console.log(value)
 
                     //TODO 
                     // 中文字符最多16个 英文32个
@@ -166,8 +164,7 @@ export default {
                     if (englishMatch) {
                         englishCount = englishMatch.length
                     }
-                    console.log(chineseMatch, englishMatch)
-                    console.log(chineseCount, englishCount)
+
                     if (chineseCount * 2 + englishCount > 32) {
                         this.$message.warning("名称的长度过长,中文字符最多16个,英文字符最多32个")
                         return
@@ -191,7 +188,7 @@ export default {
                 }
 
                 // 发送请求修改名称
-                const {data:res} = await this.$axios.post("/api/space_name", {name: newName, id: this.space.id})
+                const {data:res} = await this.$axios.put("/api/workspace/name", {name: newName, id: this.space.id})
                 const SpaceNameModifySuccess = 30
                 if (res.status != SpaceNameModifySuccess) {
                     this.$message.error(res.message)
@@ -233,7 +230,7 @@ export default {
        .desc {
             float: left;
             padding-left: 16px;
-            width: calc(76% - 80px);
+            width: calc(80% - 80px);
             text-align: left;
             height: 100%;
             display: flex;
@@ -294,11 +291,11 @@ export default {
     }
 
     .h3-name {
-        width: 25%;
+        width: 22%;
     }
 
     .h3-environment {
-        width: 35%;
+        width: 38%;
     }
 
     .h3-time {

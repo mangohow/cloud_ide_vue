@@ -14,17 +14,17 @@
         <el-aside>
           <!-- <SpaceTemplateCard :kinds="tmplKinds" @triggered="changeTmpls"></SpaceTemplateCard> -->
           <el-menu
-            default-active="0"
+            :default-active="activePath"
             class="el-menu-vertical-demo"
-            @select="OnMenuSelected"
+            :router="true"
             background-color="#303336"  
             text-color="#fff"
             active-text-color="#ffd04b">
-            <el-menu-item index="0">
+            <el-menu-item index="/dash/templates">
               <i class="el-icon-menu"></i>
               <span slot="title">空间模板</span>
             </el-menu-item>
-            <el-menu-item index="1">
+            <el-menu-item index="/dash/workspaces">
               <i class="el-icon-document"></i>
               <span slot="title">工作空间</span>
             </el-menu-item>
@@ -32,9 +32,7 @@
         </el-aside>
 
         <el-main>
-          <keep-alive>
-            <router-view></router-view>
-          </keep-alive>
+          <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -43,29 +41,21 @@
 
 <script>
 
-import TemplateView from '../components/TemplateView.vue'
 import {Base64} from "js-base64"
 
 export default {
   name: 'DashBoard',
-  components: {
-    TemplateView,
-  },
   data() {
     return {
       user: {},
-      routes: [
-        {path: "/templates"},
-        {path: "/workspaces"}
-      ]
+      activePath: ""
     }
   },
   methods: {
-    OnMenuSelected(index) {
-      this.$router.push(this.routes[index].path)
-    }
   },
   mounted() {
+    this.activePath = this.$route.path
+
     const data = window.sessionStorage.getItem("userData")
     const jdata = Base64.decode(data)
     this.user = JSON.parse(jdata)

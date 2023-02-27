@@ -6,12 +6,23 @@ import './plugins/element.js'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import moment from 'moment/moment'
+import { Message } from 'element-ui'
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = "http://localhost:8080/"
-axios.defaults.workspaceUrl = "http://192.168.44.100/ws/"
+switch (process.env.NODE_ENV) {
+  case 'development':
+    axios.defaults.baseURL = "http://localhost:8080/"
+    axios.defaults.workspaceUrl = "http://192.168.44.100/ws/"
+    break
+  default:
+    axios.defaults.baseURL = window.location.origin
+    axios.defaults.workspaceUrl = window.location.origin + "/ws/"
+}
 
+
+// axios.defaults.baseURL = "http://localhost:8080/"
+// axios.defaults.workspaceUrl = "http://192.168.44.100/ws/"
 
 Vue.prototype.$axios = axios
 
@@ -27,13 +38,20 @@ axios.interceptors.request.use(config =>{
 })
 
 // 配置响应拦截器，该拦截器用于拦截后端数据的响应
-// axios.interceptors.response.use(config => {
-//   if(config.data.status == 300) {    // 返回码为300时，说明需要登录，才能访问后台
-//     router.push("/manage/login");
-//   }
-
-//   return config;
-// })
+axios.interceptors.response.use(config => {
+  return config;
+}, error => {
+  if (error.response) {
+    switch (error.response.status) {
+        case 401:
+            // 返回 401 清除 token 信息并跳转到登录页面
+          window.sessionStorage.clear()
+          router.push("/login")
+          Message.error("需要登录")
+      }
+  }
+  return Promise.reject(error.response.data)  
+})
 
 Vue.filter('dateFormat', function (dateStr) {
   // 根据传入的日期字符串进行格式化

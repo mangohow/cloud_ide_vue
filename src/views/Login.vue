@@ -26,20 +26,20 @@
       <el-dialog title="用户注册" :visible.sync="dialogFormVisible">
 
         <el-form ref="registerFormRef" :model="registerForm" :rules="registerFormRules" label-width="0px" label-position="right" class="register_form">
-          <el-form-item prop="nickname" label="昵称" label-width="120px">
+          <el-form-item prop="nickname" label="昵称" label-width="100px">
             <el-input v-model="registerForm.nickname"></el-input>
           </el-form-item>
-          <el-form-item prop="username" label="用户名" label-width="120px">
+          <el-form-item prop="username" label="用户名" label-width="100px">
             <el-input v-model="registerForm.username"></el-input>
           </el-form-item>
-          <el-form-item prop="password" label="密码" label-width="120px">
+          <el-form-item prop="password" label="密码" label-width="100px">
             <el-input v-model="registerForm.password" type="password"></el-input>
           </el-form-item>
-          <el-form-item prop="email" label="邮箱" label-width="120px" class="form-email">
+          <el-form-item prop="email" label="邮箱" label-width="100px" class="form-email">
             <el-input v-model="registerForm.email"></el-input>
             <el-button @click="getEmailCode" :disabled="getEmailCodeButtonEnable" class="vcb">{{ getEmailCodeButtonName }}</el-button>
           </el-form-item>
-          <el-form-item prop="emailCode" label="验证码" label-width="120px">
+          <el-form-item prop="emailCode" label="验证码" label-width="100px">
             <el-input v-model="registerForm.emailCode"></el-input>
           </el-form-item>
         </el-form>
@@ -69,7 +69,7 @@ export default {
           callback(new Error("用户名只能包含数字,英文字母和下划线"))
           return
         }
-        const url = "/uname_available" + "?username=" + value
+        const url = "/auth/username/check" + "?username=" + value
         const {data: res} = await this.$axios.get(url)
         const UserNameAvailable = 17
         if (res.status != UserNameAvailable) {
@@ -158,7 +158,7 @@ export default {
                   username: this.loginForm.username,
                   password: encodedPasswd
               }
-              const {data: res} = await this.$axios.post("/login", forms);
+              const {data: res} = await this.$axios.post("/auth/login", forms);
               if(res.status == 3) {   //登录失败
                   return this.$message.error(res.message);
               }
@@ -194,7 +194,7 @@ export default {
               const encodedPassword = md5(this.registerForm.password)
               const registerForm = {...this.registerForm, password: encodedPassword}
               
-              const {data: res} = await this.$axios.post("/register", registerForm)
+              const {data: res} = await this.$axios.post("/auth/register", registerForm)
               const UserRegisterSuccess = 24
               if (res.status != UserRegisterSuccess) {
                 this.$message.error(res.message)
@@ -215,7 +215,7 @@ export default {
           return
         }
 
-        const url = "/validate_code?email=" + this.registerForm.email
+        const url = "/auth/emailCode?email=" + this.registerForm.email
         const {data: res} = await this.$axios.get(url)
         const SendEmailCodeSuccess = 19
         if (res.status != SendEmailCodeSuccess) {
@@ -298,7 +298,8 @@ export default {
 }
 
 .vcb {
-  width: 140px;
+  width: 120px;
+  font-size: 10px;
 }
 </style>
 

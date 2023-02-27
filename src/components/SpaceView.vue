@@ -45,15 +45,13 @@ export default {
     },
     methods: {
         async getAllSpaces() {
-            const {data:res} = await this.$axios.get("/api/spaces")
+            const {data:res} = await this.$axios.get("/api/workspace/list")
             const QuerySuccess = 0
             if (res.status != QuerySuccess) {
                 this.$message.error(res.message)
                 return
             }
             this.spaces = res.data
-            console.log(res)
-
         },
 
         async startSpace(id) {
